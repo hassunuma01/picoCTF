@@ -1,0 +1,70 @@
+Description
+
+We found this weird message being passed around on the servers, we think we have a working decryption scheme. 
+Download the message here. Take each number mod 37 and map it to the following character set: 0-25 is the alphabet 
+(uppercase), 26-35 are the decimal digits, and 36 is an underscore. Wrap your decrypted message in the picoCTF flag 
+format (i.e. picoCTF{decrypted_message})
+
+This challenge give you a encrypt message and show you how to decrypt, on this part:
+
+mod 37 and map it to the following character set: 0-25 is the alphabet 
+(uppercase), 26-35 are the decimal digits, and 36 is an underscore
+
+First we need to understand what is mod 37:
+
+Mod37" is a mathematical operation that calculates the remainder of dividing a number by 37. For example, if you 
+have a number X and want to know what the remainder is when X is divided by 37
+
+For this challenge, I created a two Python code that decrypts this Mod37 message:
+
+# Prompt the user to enter a line of space-separated numbers
+linha = input("Digite a linha de números separados por espaço: ")
+
+# Split the input string into a list of individual numbers
+numeros = linha.split()
+
+# Loop through each number in the list
+for numero in numeros:
+    # Calculate the result of dividing the number by 37
+    resultado_divisao = int(numero) // 37
+    
+    # Calculate the remainder of dividing the number by 37
+    resto_divisao = int(numero) % 37
+    
+    # Print the remainder of the division
+    print(f" {resto_divisao}.")
+
+The result of this part of the code will give us numbers like:
+
+"17, 26, 20, 13, 3, 36, 13, 36, 17, 26, 20, 13, 3, 36, 1, 32, 1, 28, 31, 31, 29, 27,"
+
+And the challenge also explains what to do with those numbers here:
+
+"0-25 is the alphabet(uppercase), 26-35 are the decimal digits, and 36 is an underscore"
+
+It's when we use the second part of the code that will follow the commands said above, 
+fully decrypting the message and giving us the flag.
+
+def map_value(value):
+    if value >= 0 and value <= 25:
+        return chr(value + 65) # maps to uppercase alphabet letters
+    elif value >= 26 and value <= 35:
+        return chr(value + 22) # maps to decimal digits
+    elif value == 36:
+        return '_' # maps to the underscore character
+    else:
+        return None # invalid value
+
+# example of use
+values = [17, 26, 20, 13, 3, 36, 13, 36, 17, 26, 20, 13, 3, 36, 1, 32, 1, 28, 31, 31, 29, 27,]
+for value in values:
+    character = map_value(value)
+    if character is not None:
+        print(f"{character}")
+    else:
+        print(f"{value}: invalid value").
+        
+        
+ Then you just need to put the message inside the flag.
+ 
+ picoCTF{decrypted_message}
