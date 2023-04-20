@@ -1,0 +1,79 @@
+Description
+
+A new modular challenge! Download the message here. Take each number mod 41 and find the modular inverse for the result. 
+Then map to the following character set: 1-26 are the alphabet, 27-36 are the decimal digits, and 37 is an underscore. 
+Wrap your decrypted message in the picoCTF flag format (i.e. picoCTF{decrypted_message})
+
+First we need to understand what is a mod 41:
+
+"mod 41" refers to the modular arithmetic operation with 41 as the modulus. In modular arithmetic, the result of a division
+is the remainder that is left over after dividing one number by another. For example, in regular arithmetic, 10 divided by 3 
+is 3 with a remainder of 1
+
+When performing modular arithmetic with 41 as the modulus, the result of a division will be the remainder after dividing by 41. 
+For example, 100 mod 41 would be 18, because 100 divided by 41 leaves a remainder of 18.
+
+But this challenge want us to find the inverse modular of 41 mod, its a little bit complicated in my opnion, here is the explanation:
+
+To find the modular inverse of a number in modulus 41, we can use the Extended Euclidean Algorithm. This algorithm, in addition to 
+finding the greatest common divisor between two numbers, provides us with the coefficients that, when multiplied by the modulus and 
+the number, can result in the greatest common divisor. In the case of modulus 41, we can use the fact that 41 is a prime number to 
+simplify the calculations.
+
+Suppose we want to find the modular inverse of a number "a" in modulus 41. Then, we must find a number "b" such that (a * b) % 41 = 1. 
+We can use the Extended Euclidean Algorithm to find "b". The algorithm works as follows:
+
+Initialize the values of a, b, x, y with a = 41, b = a (the number for which we want to find the inverse), x = 0, y = 1.
+While b > 0, calculate q = a // b (integer division) and update a, b, x, y as follows:
+    a, b = b, a % b
+    x, y = y, x - q * y
+When b = 0, the value of a will be the greatest common divisor between the two numbers. If a != 1, then there is no modular inverse for the 
+number "a" in modulus 41. Otherwise, the value of x is the desired modular inverse.By applying this algorithm, we can calculate the modular 
+inverse of any number in modulus 41.
+
+So i made a code in Python to make this decryption/translate this massage:
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+# This function calculates the modular inverse of a given number
+def modular_inverse(num):
+    # Iterate over all possible values from 1 to 40 inclusive
+    for i in range(1, 41):
+        # Check if the product of the number and the current value of i
+        # leaves a remainder of 1 when divided by 41
+        if (num * i) % 41 == 1:
+            # If so, return the current value of i as the modular inverse
+            return i
+            
+            # Mapping numbers to characters
+def map_to_chars(num):
+    if num >= 1 and num <= 26:
+        return chr(num + 64)  # Characters from A to Z
+    elif num >= 27 and num <= 36:
+        return chr(num + 21)  # Characters from 0 to 9
+    elif num == 37:
+        return "_"  # Underscore character
+    else:
+        return ""  # Invalid characters are not mapped
+
+# Input of numbers separated by spaces
+nums = input("Digite os números separados por espaço: ")
+
+# Separation of numbers into a list
+num_list = nums.split()
+
+# Conversion of numbers to integers and calculation of modular inverse
+inv_list = [modular_inverse(int(num) % 41) for num in num_list]
+
+# Mapping numbers to characters
+char_list = [map_to_chars(inv) for inv in inv_list]
+
+# Printing the resulting character list
+print("".join(char_list))
+
+//////////////////////////////////////////////////////////////////////////////
+
+After using this code, you just need to put the message inside the flag.
+
+picoCTF{flag}
+
